@@ -5,6 +5,10 @@
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 )
 
+;;standard jedi.el setup
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
+
 ;; add theme
 (add-to-list 'custom-theme-load-path "~/emacsthemes/")
 (load-theme 'zenburn t)
