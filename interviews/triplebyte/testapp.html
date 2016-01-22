@@ -1,0 +1,55 @@
+<html>
+
+	<head>
+		
+	</head>
+	
+	<body>
+		<canvas id="myCanvas" width="600" height="300">
+		</canvas>
+		
+		<script type="text/javascript">
+		
+			Array.prototype.max = function() {
+				return Math.max.apply(null, this);
+			};
+		
+			Array.prototype.min = function() {
+				return Math.min.apply(null, this);
+			};
+		
+			var socket = new WebSocket("ws://triplebyte-data-feed1.herokuapp.com"),
+				appData = [],
+				canvas = document.getElementById("myCanvas"),
+				ctx = canvas.getContext("2d");
+				
+			MAX_EVENTS = 50;
+			
+			socket.onmessage = function(event) {
+				
+				appData.push(JSON.parse(event.data).voltage);
+				
+				if(appData.length > MAX_EVENTS){
+					appData.shift();
+				}
+				voltageArray = [];
+				
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ctx.beginPath();
+
+				for(var i = 0; i < appData.length; i++){
+					voltage = appData[i];
+					
+					x = i * (canvas.width / Math.min(MAX_EVENTS, appData.length));
+					y = (voltage - appData.min()) * (canvas.height / (appData.max() - appData.min()));
+					
+					ctx.lineTo(x, y);
+					ctx.stroke();
+				}
+			}
+		
+		</script>
+		
+	</body>
+
+</html>
